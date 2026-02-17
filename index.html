@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ferramenta simples e intuitiva para download de vídeos com URLs diretas. Suporta MP4, WebM e outros formatos populares.">
+    <meta name="keywords" content="download vídeo, URL direta, MP4, WebM, ferramenta online">
+    <meta property="og:title" content="Video Downloader - Ferramenta Pessoal">
+    <meta property="og:description" content="Baixe vídeos facilmente com URLs diretas">
+    <meta property="og:type" content="website">
+    
+    <title>Video Downloader - Ferramenta Pessoal</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="js/app.js" as="script">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%236366f1' d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E">
+    
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Video Downloader",
+        "description": "Ferramenta pessoal para download de vídeos com URLs diretas",
+        "url": "https://videodownloader.app",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any"
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header__content">
+                <div class="header__logo">
+                    <svg class="header__icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                    <h1 class="header__title">Video Downloader</h1>
+                </div>
+                <p class="header__subtitle">Ferramenta pessoal para download de vídeos</p>
+            </div>
+        </header>
+
+        <main class="main">
+            <section class="download-section" aria-labelledby="download-title">
+                <div class="card">
+                    <h2 id="download-title" class="card__title">Baixar Vídeo</h2>
+                    <p class="card__description">Cole a URL direta do vídeo abaixo</p>
+                    
+                    <form class="download-form" id="downloadForm" novalidate>
+                        <div class="form-group">
+                            <label for="videoUrl" class="form-label">URL do Vídeo</label>
+                            <div class="input-wrapper">
+                                <input 
+                                    type="url" 
+                                    id="videoUrl" 
+                                    class="form-input" 
+                                    placeholder="https://exemplo.com/video.mp4"
+                                    required
+                                    aria-describedby="urlHelp"
+                                />
+                                <button type="button" class="btn btn--icon btn--clear" id="clearUrl" aria-label="Limpar URL">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <small id="urlHelp" class="form-help">
+                                Formatos suportados: MP4, WebM, OGG. Certifique-se de ter permissão para baixar o vídeo.
+                            </small>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn--primary btn--large" id="downloadBtn">
+                                <span class="btn__text">Baixar Vídeo</span>
+                                <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Preview Section -->
+                    <div class="preview-section" id="previewSection" hidden>
+                        <div class="preview__header">
+                            <h3 class="preview__title">Pré-visualização</h3>
+                            <button type="button" class="btn btn--icon btn--ghost" id="closePreview" aria-label="Fechar pré-visualização">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="preview__content">
+                            <video class="preview__video" id="previewVideo" controls preload="metadata">
+                                Seu navegador não suporta o elemento de vídeo.
+                            </video>
+                            <div class="preview__info" id="previewInfo">
+                                <!-- Video info will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Section -->
+                    <div class="progress-section" id="progressSection" hidden>
+                        <div class="progress__header">
+                            <h3 class="progress__title">Baixando...</h3>
+                            <span class="progress__status" id="progressStatus">0%</span>
+                        </div>
+                        <div class="progress__bar">
+                            <div class="progress__fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress__info" id="progressInfo">Preparando download...</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-section" aria-labelledby="info-title">
+                <div class="card card--info">
+                    <h3 id="info-title" class="card__title">Como usar</h3>
+                    <ol class="info-list">
+                        <li class="info-item">
+                            <span class="info__number">1</span>
+                            <div class="info__content">
+                                <strong>Encontre a URL direta</strong> - Clique com o botão direito no vídeo e selecione "Copiar link do vídeo"
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <span class="info__number">2</span>
+                            <div class="info__content">
+                                <strong>Cole a URL</strong> - A URL deve terminar com .mp4, .webm ou .ogv
+                            </div>
+                        </li>
+                        <li class="info-item">
+                            <span class="info__number">3</span>
+                            <div class="info__content">
+                                <strong>Baixe o vídeo</strong> - Clique em "Baixar Vídeo" e aguarde o download
+                            </div>
+                        </li>
+                    </ol>
+                    
+                    <div class="info__warning">
+                        <svg class="info__icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path fill="currentColor" d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+                        </svg>
+                        <p><strong>Atenção:</strong> Use esta ferramenta apenas para vídeos que você tem permissão para baixar. Respeite os direitos autorais.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <div class="footer__content">
+                <p class="footer__text">Ferramenta pessoal para download de vídeos com URLs diretas</p>
+                <p class="footer__note">Funciona melhor em navegadores modernos</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/app.js" defer></script>
+</body>
+</html>
